@@ -5,12 +5,14 @@ import os
 import pandas as pd
 
 # sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. 
-# from sklearn.externals import joblib
+from sklearn.externals import joblib
 # Import joblib package directly
-import joblib
+# import joblib
 
 ## TODO: Import any additional libraries you need to define a model
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
 
 # Provided model load function
 def model_fn(model_dir):
@@ -53,21 +55,54 @@ if __name__ == '__main__':
     # Labels are in the first column
     train_y = train_data.iloc[:,0]
     train_x = train_data.iloc[:,1:]
-    
-    
+        
+        
     ## --- Your code here --- ##
     
+    
+    ## TODO: Define a model
 
-    ## TODO: Define a model 
-    model = None
     
+    '''# Model no. 1
     
+    knn = KNeighborsClassifier()
+    parameters = {"n_neighbors":[3,4,5,6],
+                  "weights":['uniform', 'distance'], 
+                  "algorithm":['ball_tree', 'kd_tree', 'brute']
+                 }
+   
     ## TODO: Train the model
+    clf = GridSearchCV(knn, parameters, scoring='f1')
+    clf.fit(train_x, train_y)
+    
+    print("Best parameters:\n", clf.best_params_)
+    
+    estimator = clf.best_estimator_'''
+   
+ 
+    # Model no. 2
+    
+    rfc = RandomForestClassifier()
+    parameters = {"n_estimators":[10,50,100],
+                  "criterion":["gini", "entropy"],
+                  "max_depth":[3,4,None],
+                  "max_features":["sqrt", "log2", None]
+                 }
+   
+    ## TODO: Train the model
+    clf = GridSearchCV(rfc, parameters, scoring='f1')
+    clf.fit(train_x, train_y)
+    
+    print("Best parameters:\n", clf.best_params_)
+    
+    estimator = clf.best_estimator_
     
     
     
-    ## --- End of your code  --- ##
+    ## --- End of your code  --- ##'''
     
 
     # Save the trained model
-    joblib.dump(model, os.path.join(args.model_dir, "model.joblib"))
+    joblib.dump(estimator, os.path.join(args.model_dir, "model.joblib"))
+
+
